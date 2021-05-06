@@ -1,0 +1,52 @@
+version: '3.7'
+services:
+  phpfpm:
+    build: ./source/phpfpm
+    container_name: phpfpm
+    expose:
+      - "9000"
+    ports:
+      - "9550-9600:9550-9600"
+      - "18305-18315:18305-18315"
+    tty: true
+    restart: 'always'
+    volumes:
+      - "phpsocket:/sock"
+      - ./project/:/var/www/html
+      - ./source/phpfpm/php-fpm.d/:/usr/local/etc/php-fpm.d/
+    environment:
+      DB_HOST: mysql57
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: Ljy17333021636..
+      REDIS_HOST: redis5
+      REDIS_PORT: 6379
+      REDIS_DATABASE: 0
+      REDIS_PASSWORD: 123456
+    privileged: true
+    networks:
+      - lnmp
+  nginx:
+    build: ./source/nginx
+    container_name: nginx
+    ports:
+      - "9500-9530:9500-9530"
+      - "8081:80"
+    restart: always
+    tty: true
+    volumes:
+      - ./project/:/var/www/html
+      - ./source/nginx/logs:/var/log/nginx/logs
+      - ./source/nginx/conf.d:/etc/nginx/conf.d
+      - ./source/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - "phpsocket:/sock"
+    privileged: true
+    networks:
+      - lnmp
+networks:
+  lnmp:
+    external:
+      name: dbNet
+
+volumes:
+  phpsocket:
