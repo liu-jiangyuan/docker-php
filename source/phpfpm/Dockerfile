@@ -48,6 +48,8 @@ RUN docker-php-source extract && \
     docker-php-source delete && \
     apk del .build-deps
 
-RUN echo "alias ll='ls -l'" >> /etc/.bashrc && source /etc/.bashrc
+RUN git config --global user.name "willow"
+RUN git config --global user.email "719896508@qq.com"
+RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 WORKDIR "/var/www/html"
